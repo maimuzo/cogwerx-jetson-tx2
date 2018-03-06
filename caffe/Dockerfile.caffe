@@ -33,4 +33,6 @@ RUN make test -j4
 RUN make distribute
 
 # Clean up
+RUN apt-get -y remove python-pip
 RUN apt-get -y autoremove && apt-get -y clean
+
