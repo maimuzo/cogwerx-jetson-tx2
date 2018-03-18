@@ -1,4 +1,5 @@
 FROM openhorizon/aarch64-tx2-cudabase:JetPack3.2-RC
+#FROM openhorizon/aarch64-tx2-cudabase:JetPack3.2-RC
 
 #AUTHOR bmwshop@gmail.com
 MAINTAINER nuculur@gmail.com

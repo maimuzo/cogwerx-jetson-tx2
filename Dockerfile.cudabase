@@ -1,4 +1,5 @@
-FROM aarch64/ubuntu
+#FROM aarch64/ubuntu
+FROM arm64v8/ubuntu:xenial-20180123
 
 #AUTHOR bmwshop@gmail.com
 MAINTAINER nuculur@gmail.com
