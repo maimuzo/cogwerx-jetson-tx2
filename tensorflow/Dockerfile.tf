@@ -1,13 +1,27 @@
-FROM openhorizon/aarch64-tx2-cudabase
+FROM openhorizon/aarch64-tx2-cudabase:JetPack3.2-RC
 
 MAINTAINER nuculur@gmail.com
 
-# Install prereqs
-RUN apt-key add /var/cuda-repo-9-0-local/7fa2af80.pub  #CUDA9.0 key
-RUN apt-get update && apt-get install -y software-properties-common 
-RUN add-apt-repository ppa:webupd8team/java && apt-get update && apt-get install -y oracle-java8-installer
-RUN apt-get install -y zip unzip autoconf automake libtool curl zlib1g-dev maven wget python-numpy swig python-dev python-pip python-wheel
+ENV ARCH=aarch64
 
-RUN wget https://github.com/bazelbuild/bazel/releases/download/0.4.5/bazel-0.4.5-dist.zip -o /tmp/bazel-0.4.5-dist.zip && unzip bazel-0.4.5-dist.zip && rm bazel-0.4.5-dist.zip
-WORKDIR /tmp/bazel-0.4.5-dist
+# install ubuntu python releases
+RUN apt-get update && apt-get install -y --no-install-recommends --no-install-suggests python-minimal python-pip libpython-dev wget \ 
+ && apt-get install -y --no-install-recommends --no-install-suggests build-essential \
+ && apt-get install -y --no-install-recommends --no-install-suggests python-setuptools python-all-dev python-dev \
+ && apt-get -y autoremove && apt-get clean
 
+# get precompiled TF 1.6 for JetPack 3.2 RC
+WORKDIR /tmp/
+# Obtained Tensorflow wheel from: https://github.com/NVIDIA-Jetson/tf_to_trt_image_classification/tree/master#install
+COPY py27/tensorflow-1.5.0rc0-cp27-cp27mu-linux_aarch64.whl /tmp/tensorflow-1.5.0rc0-cp27-cp27mu-linux_aarch64.whl
+RUN pip install --no-cache-dir --upgrade pip && pip install tensorflow-1.5.0rc0-cp27-cp27mu-linux_aarch64.whl
+
+# Add hello.py, the TF validation script
+WORKDIR /app
+ADD hello.py /app/
+
+# Run validation script if you choose
+#CMD [ "/usr/bin/python", "/app/hello.py"]
+
+# For docker --squash build
+RUN rm -rf /tmp/*
