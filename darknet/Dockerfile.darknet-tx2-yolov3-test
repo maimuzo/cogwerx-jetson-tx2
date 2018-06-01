@@ -1,0 +1,18 @@
+FROM maimuzo/aarch64-tx2-nvidia-opencv3.4.1:latest
+
+MAINTAINER maimuzo@gmail.com
+
+# this installs darknet: http://pjreddie.com/darknet/install/
+# and then configures the tiny model for yolo
+RUN apt-get update && apt-get install -y git pkg-config wget git unzip build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev -y
+
+WORKDIR /
+RUN git clone https://github.com/pjreddie/darknet.git
+WORKDIR /darknet
+
+# change setting
+RUN sed -ie "s/GPU=0/GPU=1/g" Makefile
+RUN sed -ie "s/CUDNN=0/CUDNN=1/g" Makefile
+RUN sed -ie "s/OPENCV=0/OPENCV=1/g" Makefile
+
+ENV PATH /usr/local/cuda/bin:$PATH
